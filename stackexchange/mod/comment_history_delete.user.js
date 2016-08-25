@@ -1,6 +1,6 @@
 // ==UserScript==
-// @name 		Comment history tools
-// @namespace 	artofcode.co.uk
+// @name         Comment history tools
+// @namespace     artofcode.co.uk
 // @description Delete and edit comments from comment history.
 // @match       *://*.stackexchange.com/*
 // @match       *://*.stackoverflow.com/*
@@ -12,9 +12,12 @@
 // @exclude     *://chat.stackexchange.com/*
 // @exclude     *://chat.meta.stackexchange.com/*
 // @exclude     *://chat.stackoverflow.com/*
-// @version 	0.0.1
+// @version     0.0.1
 // @grant none
 // @attribute   ThiefMaster <adrian@planetcoding.net>
+// @updateURL   https://raw.githubusercontent.com/ArtOfCode-/Userscripts/master/stackexchange/mod/comment_history_delete.user.js
+// @downloadURL https://raw.githubusercontent.com/ArtOfCode-/Userscripts/master/stackexchange/mod/comment_history_delete.user.js
+// @supportURL  https://github.com/ArtOfCode-/Userscripts/issues
 // ==/UserScript==
 
 var userscript = function($) {
@@ -43,38 +46,38 @@ var userscript = function($) {
             alert('Failed ' + id + ': ' + textStatus);
         });
     });
-	
-	$('.text-row:not(.deleted-row) > td').on('click', function(ev) {
-		var commentText = $(this).text();
-		$(this).html("<textarea style='width:100%;margin:5px;' rows='4'>" + commentText + "</textbox>");
-		$(this).append("<br/><button class='comment-edit-submit'>Save</button>");
-	});
-	
-	$('.comment-edit-submit').on('click', function(ev) {
-		var $this = $(this);
-		var commentId = $(this).parent().data("id");
-		var postId = $(this).parent().data("postid");
-		var comment = $(this).siblings("textarea").first().text();
-		$(this).attr("disabled", "disabled");
-		$.ajax({
-			'type': 'POST',
-			'url': '/posts/comments/' + commentId + 'edit',
-			'data': {
-				'comment': comment,
-				'fkey': StackExchange.options.user.fkey
-			}
-		})
-		.done(function(data) {
-			$this.text(comment);
-		})
-		.error(function(jqXHR, textStatus, errorThrown) {
-			StackExchange.helpers.showErrorMessage($('.topbar'), "An error occurred while editing.", {
-				'position': 'toast',
-				'transient': true,
-				'transientTimeout': 10000
-			});
-		});
-	});
+    
+    $('.text-row:not(.deleted-row) > td').on('click', function(ev) {
+        var commentText = $(this).text();
+        $(this).html("<textarea style='width:100%;margin:5px;' rows='4'>" + commentText + "</textbox>");
+        $(this).append("<br/><button class='comment-edit-submit'>Save</button>");
+    });
+    
+    $('.comment-edit-submit').on('click', function(ev) {
+        var $this = $(this);
+        var commentId = $(this).parent().data("id");
+        var postId = $(this).parent().data("postid");
+        var comment = $(this).siblings("textarea").first().text();
+        $(this).attr("disabled", "disabled");
+        $.ajax({
+            'type': 'POST',
+            'url': '/posts/comments/' + commentId + 'edit',
+            'data': {
+                'comment': comment,
+                'fkey': StackExchange.options.user.fkey
+            }
+        })
+        .done(function(data) {
+            $this.text(comment);
+        })
+        .error(function(jqXHR, textStatus, errorThrown) {
+            StackExchange.helpers.showErrorMessage($('.topbar'), "An error occurred while editing.", {
+                'position': 'toast',
+                'transient': true,
+                'transientTimeout': 10000
+            });
+        });
+    });
 });
 
 var el = document.createElement("script");
