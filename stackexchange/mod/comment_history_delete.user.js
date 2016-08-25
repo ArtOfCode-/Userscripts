@@ -12,7 +12,7 @@
 // @exclude     *://chat.stackexchange.com/*
 // @exclude     *://chat.meta.stackexchange.com/*
 // @exclude     *://chat.stackoverflow.com/*
-// @version     0.0.4
+// @version     0.0.5
 // @grant       none
 // @attribute   ThiefMaster <adrian@planetcoding.net>
 // @updateURL   https://raw.githubusercontent.com/ArtOfCode-/Userscripts/master/stackexchange/mod/comment_history_delete.user.js
@@ -47,14 +47,13 @@ var userscript = function($) {
     });
     
     $('.text-row:not(.deleted-row) > td').on('click', function(ev) {
-        var commentText = $(this).text();
-        $(this).html("<textarea class='edit-comment' style='width:100%;margin:5px;' rows='4'>" + commentText + "</textarea>");
-        $(this).append("<br/><button class='comment-edit-submit'>Save</button>");
+		if ($(this).data("editing") != 'editing') {
+			var commentText = $(this).text();
+			$(this).html("<textarea class='edit-comment' style='width:90%;margin:5px;' rows='4'>" + commentText + "</textarea>");
+			$(this).append("<br/><button class='comment-edit-submit'>Save</button>");
+			$(this).data('editing', 'editing');
+		}
     });
-	
-	$('.edit-comment').on('click', function(ev) {
-		ev.stopPropagation();
-	});
     
     $('.comment-edit-submit').on('click', function(ev) {
         var $this = $(this);
@@ -71,7 +70,8 @@ var userscript = function($) {
             }
         })
         .done(function(data) {
-            $this.text(comment);
+            $this.parent().text(comment);
+			$this.parent().data('editing', 'false');
         })
         .error(function(jqXHR, textStatus, errorThrown) {
             StackExchange.helpers.showErrorMessage($('.topbar'), "An error occurred while editing.", {
