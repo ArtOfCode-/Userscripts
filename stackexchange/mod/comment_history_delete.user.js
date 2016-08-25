@@ -48,7 +48,7 @@ var userscript = function($) {
     
     $('.text-row:not(.deleted-row) > td').on('click', function(ev) {
         var commentText = $(this).text();
-        $(this).html("<textarea style='width:100%;margin:5px;' rows='4'>" + commentText + "</textbox>");
+        $(this).html("<textarea style='width:100%;margin:5px;' rows='4'>" + commentText + "</textarea>");
         $(this).append("<br/><button class='comment-edit-submit'>Save</button>");
     });
     
