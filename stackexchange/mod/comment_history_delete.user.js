@@ -1,6 +1,6 @@
 // ==UserScript==
-// @name         Comment history tools
-// @namespace     artofcode.co.uk
+// @name        Comment history tools
+// @namespace   artofcode.co.uk
 // @description Delete and edit comments from comment history.
 // @match       *://*.stackexchange.com/*
 // @match       *://*.stackoverflow.com/*
@@ -12,8 +12,8 @@
 // @exclude     *://chat.stackexchange.com/*
 // @exclude     *://chat.meta.stackexchange.com/*
 // @exclude     *://chat.stackoverflow.com/*
-// @version     0.0.1
-// @grant none
+// @version     0.0.2
+// @grant       none
 // @attribute   ThiefMaster <adrian@planetcoding.net>
 // @updateURL   https://raw.githubusercontent.com/ArtOfCode-/Userscripts/master/stackexchange/mod/comment_history_delete.user.js
 // @downloadURL https://raw.githubusercontent.com/ArtOfCode-/Userscripts/master/stackexchange/mod/comment_history_delete.user.js
