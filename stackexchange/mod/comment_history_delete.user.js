@@ -12,7 +12,7 @@
 // @exclude     *://chat.stackexchange.com/*
 // @exclude     *://chat.meta.stackexchange.com/*
 // @exclude     *://chat.stackoverflow.com/*
-// @version     0.0.2
+// @version     0.0.3
 // @grant       none
 // @attribute   ThiefMaster <adrian@planetcoding.net>
 // @updateURL   https://raw.githubusercontent.com/ArtOfCode-/Userscripts/master/stackexchange/mod/comment_history_delete.user.js
@@ -27,8 +27,7 @@ var userscript = function($) {
             type: 'POST',
             data: {
                 fkey: StackExchange.options.user.fkey
-            },
-            dataType: 'text'
+            }
         });
     }
 
@@ -78,7 +77,7 @@ var userscript = function($) {
             });
         });
     });
-});
+}
 
 var el = document.createElement("script");
 el.type = "application/javascript";
