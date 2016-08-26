@@ -12,7 +12,7 @@
 // @exclude     *://chat.stackexchange.com/*
 // @exclude     *://chat.meta.stackexchange.com/*
 // @exclude     *://chat.stackoverflow.com/*
-// @version     0.2.1
+// @version     0.3.1
 // @grant       none
 // @attribute   ThiefMaster <adrian@planetcoding.net>
 // @updateURL   https://raw.githubusercontent.com/ArtOfCode-/Userscripts/master/stackexchange/mod/comment_history_delete.user.js
