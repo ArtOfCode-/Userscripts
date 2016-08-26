@@ -2,13 +2,13 @@
 // @name        Comment history tools
 // @namespace   artofcode.co.uk
 // @description Delete and edit comments from comment history.
-// @match       *://*.stackexchange.com/*
-// @match       *://*.stackoverflow.com/*
-// @match       *://*.superuser.com/*
-// @match       *://*.serverfault.com/*
-// @match       *://*.askubuntu.com/*
-// @match       *://*.stackapps.com/*
-// @match       *://*.mathoverflow.net/*
+// @match       *://*.stackexchange.com/admin/users/*/post-comments*
+// @match       *://*.stackoverflow.com/admin/users/*/post-comments*
+// @match       *://*.superuser.com/admin/users/*/post-comments*
+// @match       *://*.serverfault.com/admin/users/*/post-comments*
+// @match       *://*.askubuntu.com/admin/users/*/post-comments*
+// @match       *://*.stackapps.com/admin/users/*/post-comments*
+// @match       *://*.mathoverflow.net/admin/users/*/post-comments*
 // @exclude     *://chat.stackexchange.com/*
 // @exclude     *://chat.meta.stackexchange.com/*
 // @exclude     *://chat.stackoverflow.com/*
