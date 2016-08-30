@@ -12,7 +12,7 @@
 // @exclude     *://chat.stackexchange.com/*
 // @exclude     *://chat.meta.stackexchange.com/*
 // @exclude     *://chat.stackoverflow.com/*
-// @version     0.3.1
+// @version     0.4.1
 // @grant       none
 // @attribute   ThiefMaster <adrian@planetcoding.net>
 // @updateURL   https://raw.githubusercontent.com/ArtOfCode-/Userscripts/master/stackexchange/mod/comment_history_delete.user.js
@@ -30,6 +30,12 @@ var userscript = function($) {
             }
         });
     }
+	
+	function getTextNodesIn(el) {
+		return $(el).find(":not(iframe)").andSelf().contents().filter(function() {
+			return this.nodeType == 3;
+		});
+	};
 
     $('.meta-row:not(.deleted-row) > td > a').after(' <a href="#" class="delete-comment">(delete)</a>');
     $('.delete-comment').on('click', function(e) {
@@ -48,7 +54,7 @@ var userscript = function($) {
     
     $('.text-row:not(.deleted-row) > td').on('click', function(ev) {
 		if ($(this).data("editing") != 'editing') {
-			var commentText = $.trim($(this).text());
+			var commentText = $.trim(getTextNodesIn($(this))[0].data);
 			$(this).html("<textarea class='edit-comment' style='width:90%;margin:5px;' rows='4'>" + commentText + "</textarea>");
 			$(this).append("<br/><button class='comment-edit-submit'>Save</button>");
 			$(this).data('editing', 'editing');
