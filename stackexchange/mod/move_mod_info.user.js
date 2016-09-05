@@ -100,7 +100,7 @@ if(StackExchange.options.user.userType === 4) {
     }
     
     modinfo.getTimelineLink = function(postId, callback) {
-        callback($('<a href="/admin/posts/timeline' + postId + '"></a>'));
+        callback($('<a href="/admin/posts/timeline/' + postId + '"></a>'));
     }
 
     modinfo.showDeletedComments = function(onPost) {
