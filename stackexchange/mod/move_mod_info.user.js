@@ -100,34 +100,7 @@ if(StackExchange.options.user.userType === 4) {
     }
     
     modinfo.getTimelineLink = function(postId, callback) {
-        if(!modinfo.postIssues) {
-            $.ajax({
-                type: 'GET',
-                url: '/admin/posts/issues/' + postId,
-                data: {
-                    fkey: StackExchange.options.user.fkey
-                }
-            }).done(function(data) {
-                var matches = $("a[href='/admin/posts/timeline/" + postId + "']", data);
-                if(matches) {
-                    callback(matches);
-                }
-                else {
-                    callback(null);
-                }
-            }).error(function() {
-                callback(null);
-            });
-        }
-        else {
-            var matches = $("a[href='/admin/posts/timeline/" + postId + "']", modinfo.postIssues);
-            if(matches) {
-                callback(matches);
-            }
-            else {
-                callback(null);
-            }
-        }
+        callback($('<a href="/admin/posts/timeline' + postId + '"></a>'));
     }
 
     modinfo.showDeletedComments = function(onPost) {
