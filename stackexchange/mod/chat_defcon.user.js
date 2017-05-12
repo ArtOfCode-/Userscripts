@@ -18,12 +18,13 @@ $(document).ready(function() {
     'background': '#ff6100',
     'color': 'white',
     'padding': '5px 8px',
-    'border-radius': '3px'
+    'border-radius': '3px',
+    'margin-left': '10px'
   }).addClass('defcon'));
   
   var total = 0;
   CHAT.RoomUsers.all().forEach(function(u) {
-    $.get('/admin/annotations/' + a.id).done(function(data) {
+    $.get('/admin/annotations/' + u.id).done(function(data) {
       total += $('#annotlist li', data).length;
       $('.defcon').text(total);
     });
