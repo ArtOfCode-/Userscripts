@@ -2,8 +2,8 @@
 // @name        Move SE Mod Info
 // @description Moves the mod quick-peek info box to somewhere that doesn't require a wider viewport.
 // @author      ArtOfCode
-// @version     0.3.2
-// @namespace   http://artofcode.co.uk/
+// @version     0.3.3
+// @namespace   https://artofcode.co.uk/
 // @grant       none
 // @match       *://*.stackexchange.com/*
 // @match       *://*.stackoverflow.com/*
@@ -13,27 +13,29 @@
 // @match       *://*.stackapps.com/*
 // @match       *://*.mathoverflow.net/*
 // @run-at      document-idle
+// @updateURL   https://github.com/ArtOfCode-/Userscripts/raw/master/stackexchange/mod/move_mod_info.user.js
+// @downloadURL https://github.com/ArtOfCode-/Userscripts/raw/master/stackexchange/mod/move_mod_info.user.js
 // ==/UserScript==
 
-if(StackExchange.options.user.userType === 4) {
-
+/* globals $, StackExchange, modinfo */
+if (StackExchange.options.user.userType === 4) {
     window.modinfo = {};
 
     modinfo.createIndicator = function(text, href, targetBlank, background) {
-        var $link = $("<a></a>");
+        let $link = $("<a></a>");
         $link.attr("href", href);
         $link.attr("target", (targetBlank ? "_blank" : ""));
         $link.css("color", "white");
         
         $link.html($("<div></div>")
-            .addClass(background + (background == "supernova" || background == "hot" ? "bg" : ""))
+            .addClass(background + (background === "supernova" || background === "hot" ? "bg" : ""))
             .css("padding", "6px")
             .css("border-radius", "2px")
             .css("margin", "5px")
             .text(text));
         
         return $link;
-    }
+    };
 
     modinfo.getFlagCount = function(postId, callback) {
         if(!modinfo.postIssues) {
@@ -46,8 +48,8 @@ if(StackExchange.options.user.userType === 4) {
             }).done(function(data) {
                 modinfo.postIssues = data;
                 
-                var matches = $("a[href='/admin/posts/" + postId + "/show-flags']", data).text().match(/(\d+)/g);
-                if(matches) {
+                let matches = $("a[href='/admin/posts/" + postId + "/show-flags']", data).text().match(/(\d+)/g);
+                if (matches) {
                     callback(matches[0]);
                 }
                 else {
@@ -58,15 +60,15 @@ if(StackExchange.options.user.userType === 4) {
             });
         }
         else {
-            var matches = $("a[href='/admin/posts/" + postId + "/show-flags']", modinfo.postIssues).text().match(/(\d+)/g);
-            if(matches) {
+            let matches = $("a[href='/admin/posts/" + postId + "/show-flags']", modinfo.postIssues).text().match(/(\d+)/g);
+            if (matches) {
                 callback(matches[0]);
             }
             else {
                 callback(null);
             }
         }
-    }
+    };
 
     modinfo.getCommentCount = function(postId, callback) {
         if(!modinfo.postIssues) {
@@ -77,8 +79,8 @@ if(StackExchange.options.user.userType === 4) {
                     fkey: StackExchange.options.user.fkey
                 }
             }).done(function(data) {
-                var matches = $("a.fetch-deleted-comments", data).text().match(/(\d+)/g);
-                if(matches) {
+                let matches = $("a.fetch-deleted-comments", data).text().match(/(\d+)/g);
+                if (matches) {
                     callback(matches[0]);
                 }
                 else {
@@ -89,25 +91,25 @@ if(StackExchange.options.user.userType === 4) {
             });
         }
         else {
-            var matches = $("a.fetch-deleted-comments", modinfo.postIssues).text().match(/(\d+)/g);
-            if(matches) {
+            let matches = $("a.fetch-deleted-comments", modinfo.postIssues).text().match(/(\d+)/g);
+            if (matches) {
                 callback(matches[0]);
             }
             else {
                 callback(null);
             }
         }
-    }
+    };
     
     modinfo.getTimelineLink = function(postId, callback) {
         callback($('<a href="/admin/posts/timeline/' + postId + '"></a>'));
-    }
+    };
 
     modinfo.showDeletedComments = function(onPost) {
         StackExchange.comments.loadAll(onPost, '?includeDeleted=true').done(function() {
             modinfo.bindUndeleteComment(onPost);
             
-            var commentDiv = StackExchange.comments.uiForPost(onPost).jDiv;
+            let commentDiv = StackExchange.comments.uiForPost(onPost).jDiv;
             
             if (!modinfo.isElementInViewport(commentDiv[0])) {
                 $('html, body').animate({
@@ -115,11 +117,11 @@ if(StackExchange.options.user.userType === 4) {
                 }, 200);
             }
         });
-    }
+    };
 
     // http://stackoverflow.com/questions/123999/how-to-tell-if-a-dom-element-is-visible-in-the-current-viewport/7557433#7557433
     modinfo.isElementInViewport = function(el) {
-        var rect = el.getBoundingClientRect();
+        let rect = el.getBoundingClientRect();
 
         return (
             rect.top >= 0 &&
@@ -127,13 +129,13 @@ if(StackExchange.options.user.userType === 4) {
             rect.bottom <= (window.innerHeight || document.documentElement.clientHeight) && /*or $(window).height() */
             rect.right <= (window.innerWidth || document.documentElement.clientWidth) /*or $(window).width() */
         );
-    }
+    };
 
     modinfo.bindUndeleteComment = function(onPost) {
-        var commentUi = StackExchange.comments.uiForPost(onPost);
+        let commentUi = StackExchange.comments.uiForPost(onPost);
 
         commentUi.jDiv.find('.undelete-comment').click(function () {
-            var undelete = $(this),
+            let undelete = $(this),
                 row = undelete.closest('.comment'),
                 commentId = row.attr('id').replace('comment-','');
             
@@ -153,7 +155,7 @@ if(StackExchange.options.user.userType === 4) {
             .done(function (singleCommentRow) {
                 row.replaceWith(singleCommentRow);
             })
-            .fail(function (jqXHR, textStatus, errorThrown) {
+            .fail(function (jqXHR, textStatus) {
                 undelete.parent().showErrorMessage(textStatus || 'An error occurred while trying to undelete');
             })
             .always(function () {
@@ -162,41 +164,41 @@ if(StackExchange.options.user.userType === 4) {
             });
 
         });
-    }
+    };
 
-    var $posts = $(".question, .answer");
+    let $posts = $(".question, .answer");
 
     $posts.each(function() {
-        var postType = $(this).hasClass("question") ? "question" : "answer";
-        var postId = $(this).data(postType + "id");
+        let postType = $(this).hasClass("question") ? "question" : "answer";
+        let postId = $(this).data(postType + "id");
 
-        var postDiv = $("div." + postType + "[data-" + postType + "id='" + postId + "']");
+        let postDiv = $("div." + postType + "[data-" + postType + "id='" + postId + "']");
 
         modinfo.getFlagCount(postId, function(flags) {
             modinfo.getCommentCount(postId, function(comments) {
                 modinfo.getTimelineLink(postId, function(timeline) {
                     if(flags !== null) {
-                        var $indicator = modinfo.createIndicator(flags, "/admin/posts/" + postId + "/show-flags", true, "supernova");
-                        $indicator.attr("title", flags + " flags have been cast on this post");
-                        $indicator.appendTo(postDiv.find("div.vote"));
+                        let $flags = modinfo.createIndicator(flags, "/admin/posts/" + postId + "/show-flags", true, "supernova");
+                        $flags.attr("title", flags + " flags have been cast on this post");
+                        $flags.appendTo(postDiv.find("div.vote"));
                     }
                     
                     if(comments !== null) {
-                        var $indicator = modinfo.createIndicator(comments, "#", false, "hot");
-                        $indicator.attr("title", "there are " + comments + " deleted comments on this post");
-                        $indicator.click(function(e) {
+                        let $comments = modinfo.createIndicator(comments, "#", false, "hot");
+                        $comments.attr("title", "there are " + comments + " deleted comments on this post");
+                        $comments.click(function(e) {
                             e.preventDefault();
                             modinfo.showDeletedComments(postDiv);
                         });
-                        $indicator.appendTo(postDiv.find("div.vote"));
+                        $comments.appendTo(postDiv.find("div.vote"));
                     }
                     
                     if(timeline !== null) {
-                        var $indicator = modinfo.createIndicator("T", timeline.attr("href"), true, "");
-                        $indicator.children("div").css("background", "#1B7ECE");
-                        $indicator.attr("title", "mod timeline");
-                        $indicator.children("a").first().attr("href", "/admin/posts/timeline/" + postId);
-                        $indicator.appendTo(postDiv.find("div.vote"));
+                        let $timeline = modinfo.createIndicator("T", timeline.attr("href"), true, "");
+                        $timeline.children("div").css("background", "#1B7ECE");
+                        $timeline.attr("title", "mod timeline");
+                        $timeline.children("a").first().attr("href", "/admin/posts/timeline/" + postId);
+                        $timeline.appendTo(postDiv.find("div.vote"));
                     }
                 });
             });

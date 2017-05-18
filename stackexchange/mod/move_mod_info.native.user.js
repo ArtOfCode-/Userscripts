@@ -15,6 +15,17 @@
 // @run-at      document-idle
 // ==/UserScript==
 
+/**
+ * THIS USERSCRIPT IS DEPRECATED.
+ * This version originally existed for people using Chrome to not have to install a userscript manager, but Chrome has
+ * removed that ability now for security reasons. As such, this script is deprecated and will not be updated.
+ *
+ * -Art, May 2017
+ */
+
+console.warn("WARNING: You're using a deprecated version of the Move SE Mod Info userscript. For the current version," +
+             " please visit https://github.com/ArtOfCode-/Userscripts/raw/master/stackexchange/mod/move_mod_info.user.js");
+
 var userscript = function($) {
     if(StackExchange.options.user.userType === 4) {
 
