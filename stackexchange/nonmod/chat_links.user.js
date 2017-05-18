@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Chat Links
 // @namespace    https://artofcode.co.uk
-// @version      0.0.1
+// @version      0.0.2
 // @description  Links a user's chat profile from their main-site profile.
 // @author       ArtOfCode
 // @match        *://*.stackexchange.com/users/*
@@ -32,4 +32,4 @@
             }
         }
     });
-});
+})();
