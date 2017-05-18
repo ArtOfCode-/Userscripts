@@ -3,7 +3,7 @@
 // @namespace   https://charcoal-se.org/
 // @description Gives you an indication of the number of problems caused by users in this room.
 // @author      ArtOfCode
-// @version     0.0.2
+// @version     0.0.3
 // @updateURL   https://github.com/ArtOfCode-/Userscripts/raw/master/stackexchange/mod/chat_defcon.user.js
 // @downloadURL https://github.com/ArtOfCode-/Userscripts/raw/master/stackexchange/mod/chat_defcon.user.js
 // @supportURL  https://github.com/ArtOfCode-/Userscripts/issues
@@ -22,11 +22,16 @@ $(document).ready(function() {
     'margin-left': '10px'
   }).addClass('defcon'));
 
-  var total = 0;
-  var users = 0;
+  $.ajaxSettings.beforeSend = function(xhr) {
+    xhr.setRequestHeader('X-Requested-With', { toString: function() { return ''; } });
+  };
+
+  let total = 0;
+  let users = 0;
   CHAT.RoomUsers.all().forEach(function(u) {
-    $.get('/admin/annotations/' + u.id).done(function(data) {
-      var annos = $('#annotlist li', data).length;
+    $.get('/users/' + u.id).done(function(data) {
+      let count = $('#annotation-count', data);
+      let annos = count.length > 0 ? parseInt(count.text().trim(), 10) : 0;
       total += annos;
       if (annos > 0) {
         users += 1;
