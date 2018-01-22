@@ -2,7 +2,7 @@
 // @name        Move SE Mod Info
 // @description Moves the mod quick-peek info box to somewhere that doesn't require a wider viewport.
 // @author      ArtOfCode
-// @version     0.4.1
+// @version     0.5.1
 // @namespace   https://artofcode.co.uk/
 // @grant       none
 // @match       *://*.stackexchange.com/*
