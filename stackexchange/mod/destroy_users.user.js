@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         User Destruction Streamliner
 // @namespace    https://artofcode.co.uk/
-// @version      0.1.0
+// @version      0.2.1
 // @description  Adds a destruction button to user cards.
 // @author       ArtOfCode
 // @match       *://*.stackexchange.com/*
@@ -30,7 +30,12 @@
 
     const addLinks = () => {
         $('.user-info .-flair').each((i, el) => {
-            const id = $(el).parent().find('a').first().attr('href').match(/\/(\d+)\//)[1];
+            const userLink = $(el).parent().find('a').first();
+            if (!userLink) {
+                return;
+            }
+
+            const id = userLink.attr('href').match(/\/(\d+)\//)[1];
             const trigger = $('<a/>');
             trigger.text('destroy').attr('href', '#').addClass('custom-user-destroy').css('float', 'right').data('uid', id);
             trigger.appendTo(el);
