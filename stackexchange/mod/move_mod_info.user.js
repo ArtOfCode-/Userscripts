@@ -2,7 +2,7 @@
 // @name        Move SE Mod Info
 // @description Moves the mod quick-peek info box to somewhere that doesn't require a wider viewport.
 // @author      ArtOfCode
-// @version     0.3.3
+// @version     0.4.1
 // @namespace   https://artofcode.co.uk/
 // @grant       none
 // @match       *://*.stackexchange.com/*
@@ -207,7 +207,7 @@ if (StackExchange.options.user.userType === 4) {
 
     $(document).on("DOMNodeInserted", function(e) {
         if($(e.target).hasClass("post-issue")) {
-            $(e.target).remove();
+            $(e.target).css('display', 'none');
         }
     });
     
