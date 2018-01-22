@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Timeline & Revisions Links
 // @namespace    https://artofcode.co.uk/
-// @version      0.0.1
+// @version      0.1.1
 // @description  Adds links to a post's user timeline and revisions so you don't have to dig around for them.
 // @author       ArtOfCode
 // @match       *://*.stackexchange.com/*
@@ -24,6 +24,12 @@
 
 (function() {
     'use strict';
+
+    // Specifically compatible with animuson's SEMTI (https://github.com/animuson/se-mod-tools-improved/blob/master/better-mod-tools.user.js)
+    // If SEMTI is present, TRL won't run.
+    if (typeof(window.completeBasicAction) !== "undefined" && typeof(window.completeMergeAction) !== "undefined") {
+        return;
+    }
 
     const addLink = (el, href, text) => {
         const menu = $(el).find('.post-menu');
