@@ -2,7 +2,7 @@
 // @name        Stack Mod Style Mod
 // @description 'Mod'[0] == 'Moderator' && 'Mod'[1] == 'Modification';
 // @author      ArtOfCode
-// @version     0.0.1
+// @version     0.1.1
 // @namespace   http://artofcode.co.uk/
 // @grant       none
 // @match       *://*.stackexchange.com/*
@@ -12,6 +12,8 @@
 // @match       *://*.askubuntu.com/*
 // @match       *://*.stackapps.com/*
 // @match       *://*.mathoverflow.net/*
+// @updateURL   https://github.com/ArtOfCode-/Userscripts/raw/master/stackexchange/mod/style_mod.user.js
+// @downloadURL https://github.com/ArtOfCode-/Userscripts/raw/master/stackexchange/mod/style_mod.user.js
 // @run-at      document-idle
 // ==/UserScript==
 
@@ -82,4 +84,8 @@ styleMod.addCSS(modSheet, ".hotbg", {
 
 styleMod.addCSS(modSheet, ".supernovabg a", {
     'color': 'black !important'
+});
+
+styleMod.addCSS(modSheet, ".msemi-timeline-div", {
+    'background': '#BEC1ED'
 });
