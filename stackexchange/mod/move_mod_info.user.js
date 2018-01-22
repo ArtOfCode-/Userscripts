@@ -195,7 +195,7 @@ if (StackExchange.options.user.userType === 4) {
                     
                     if(timeline !== null) {
                         let $timeline = modinfo.createIndicator("T", timeline.attr("href"), true, "");
-                        $timeline.children("div").css("background", "#1B7ECE");
+                        $timeline.children("div").css("background", "#1B7ECE").addClass('msemi-timeline-div');
                         $timeline.attr("title", "mod timeline");
                         $timeline.children("a").first().attr("href", "/admin/posts/timeline/" + postId);
                         $timeline.appendTo(postDiv.find("div.vote"));
