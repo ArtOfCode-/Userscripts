@@ -2,7 +2,7 @@
 // @name        Move SE Mod Info
 // @description Moves the mod quick-peek info box to somewhere that doesn't require a wider viewport.
 // @author      ArtOfCode
-// @version     0.5.1
+// @version     0.5.2
 // @namespace   https://artofcode.co.uk/
 // @grant       none
 // @match       *://*.stackexchange.com/*
@@ -17,198 +17,102 @@
 // @downloadURL https://github.com/ArtOfCode-/Userscripts/raw/master/stackexchange/mod/move_mod_info.user.js
 // ==/UserScript==
 
+
+// this serves only to avoid embarassing mistakes caused by inadvertently loading this script onto a page that isn't a Stack Exchange page
+var isSEsite = false;
+for (var s of document.querySelectorAll("script")) isSEsite = isSEsite||/StackExchange\.ready\(/.test(s.textContent);
+
+// don't bother running this if the user isn't a moderator on the current site
+if (!isSEsite || typeof StackExchange === "undefined" || !StackExchange.options.user.isModerator || StackExchange.options.user.userType !== 4)
+    return;
+
 /* globals $, StackExchange, modinfo */
-if (StackExchange.options.user.userType === 4) {
-    window.modinfo = {};
+window.modinfo = {};
 
-    modinfo.createIndicator = function(text, href, targetBlank, background) {
-        let $link = $("<a></a>");
-        $link.attr("href", href);
-        $link.attr("target", (targetBlank ? "_blank" : ""));
-        $link.css("color", "white");
-        
-        $link.html($("<div></div>")
-            .addClass(background + (background === "supernova" || background === "hot" ? "bg" : ""))
-            .css("padding", "6px")
-            .css("border-radius", "2px")
-            .css("margin", "5px")
-            .text(text));
-        
-        return $link;
-    };
-
-    modinfo.getFlagCount = function(postId, callback) {
-        if(!modinfo.postIssues) {
-            $.ajax({
-                type: 'GET',
-                url: '/admin/posts/issues/' + postId,
-                data: {
-                    fkey: StackExchange.options.user.fkey
-                }
-            }).done(function(data) {
-                modinfo.postIssues = data;
-                
-                let matches = $("a[href='/admin/posts/" + postId + "/show-flags']", data).text().match(/(\d+)/g);
-                if (matches) {
-                    callback(matches[0]);
-                }
-                else {
-                    callback(null);
-                }
-            }).error(function() {
-                callback(null);
-            });
-        }
-        else {
-            let matches = $("a[href='/admin/posts/" + postId + "/show-flags']", modinfo.postIssues).text().match(/(\d+)/g);
-            if (matches) {
-                callback(matches[0]);
-            }
-            else {
-                callback(null);
-            }
-        }
-    };
-
-    modinfo.getCommentCount = function(postId, callback) {
-        if(!modinfo.postIssues) {
-            $.ajax({
-                type: 'GET',
-                url: '/admin/posts/issues/' + postId,
-                data: {
-                    fkey: StackExchange.options.user.fkey
-                }
-            }).done(function(data) {
-                let matches = $("a.fetch-deleted-comments", data).text().match(/(\d+)/g);
-                if (matches) {
-                    callback(matches[0]);
-                }
-                else {
-                    callback(null);
-                }
-            }).error(function() {
-                callback(null);
-            });
-        }
-        else {
-            let matches = $("a.fetch-deleted-comments", modinfo.postIssues).text().match(/(\d+)/g);
-            if (matches) {
-                callback(matches[0]);
-            }
-            else {
-                callback(null);
-            }
-        }
-    };
+modinfo.createIndicator = function(text, href, targetBlank, background) {
+    let $link = $("<a></a>");
+    $link.attr("href", href);
+    $link.attr("target", (targetBlank ? "_blank" : ""));
+    $link.css("color", "white");
     
-    modinfo.getTimelineLink = function(postId, callback) {
-        callback($('<a href="/admin/posts/timeline/' + postId + '"></a>'));
-    };
+    $link.html($("<div></div>")
+        .addClass(background + (background === "supernova" || background === "hot" ? "bg" : ""))
+        .css("padding", "6px")
+        .css("border-radius", "2px")
+        .css("margin", "5px")
+        .text(text));
+    
+    return $link;
+};
 
-    modinfo.showDeletedComments = function(onPost) {
-        StackExchange.comments.loadAll(onPost, '?includeDeleted=true').done(function() {
-            modinfo.bindUndeleteComment(onPost);
-            
-            let commentDiv = StackExchange.comments.uiForPost(onPost).jDiv;
-            
-            if (!modinfo.isElementInViewport(commentDiv[0])) {
-                $('html, body').animate({
-                    scrollTop: commentDiv.offset().top
-                }, 200);
-            }
-        });
-    };
+// ok, there's two possibilities here: 
+// 1. this is running BEFORE the marginal mod indicators have loaded (probably true but not guaranteed)
+// 2. this is running AFTER the mraginal mod indicators have loaded and they've already been inserted into the page DOM
+//
+// To make this robust AND avoid having to load them twice... design the logic such that it expects them marginal indicators to already exist, 
+// and just wait for them to load before running.
 
-    // http://stackoverflow.com/questions/123999/how-to-tell-if-a-dom-element-is-visible-in-the-current-viewport/7557433#7557433
-    modinfo.isElementInViewport = function(el) {
-        let rect = el.getBoundingClientRect();
+function WaitForMMI()
+{
+    var loaded = $.Deferred();
+    if ( $(".post-issue-display").length )
+      loaded.resolve();
+    
+   $(document)
+      .ajaxSuccess(function(event, XMLHttpRequest, ajaxOptions)
+      {
+         if (ajaxOptions.url.indexOf("/admin/posts/issues/") == 0)
+         {
+            setTimeout(() =>loaded.resolve(), 1);
+         }
+      });
 
-        return (
-            rect.top >= 0 &&
-            rect.left >= 0 &&
-            rect.bottom <= (window.innerHeight || document.documentElement.clientHeight) && /*or $(window).height() */
-            rect.right <= (window.innerWidth || document.documentElement.clientWidth) /*or $(window).width() */
-        );
-    };
+    return loaded.promise();
+}
 
-    modinfo.bindUndeleteComment = function(onPost) {
-        let commentUi = StackExchange.comments.uiForPost(onPost);
-
-        commentUi.jDiv.find('.undelete-comment').click(function () {
-            let undelete = $(this),
-                row = undelete.closest('.comment'),
-                commentId = row.attr('id').replace('comment-','');
-            
-            if (undelete.is(':working')) return;
-            undelete.working(true).addSpinnerAfter({ 'padding':'0 3px' });
-
-            $.ajax({
-                type: 'POST',
-                url: '/admin/posts/{postId}/comments/{commentId}/undelete'
-                    .replace("{postId}", commentUi.postId)
-                    .replace("{commentId}", commentId),
-                dataType: 'html',
-                data: {
-                    fkey: StackExchange.options.user.fkey
-                }
-            })
-            .done(function (singleCommentRow) {
-                row.replaceWith(singleCommentRow);
-            })
-            .fail(function (jqXHR, textStatus) {
-                undelete.parent().showErrorMessage(textStatus || 'An error occurred while trying to undelete');
-            })
-            .always(function () {
-                StackExchange.helpers.removeSpinner();
-                undelete.working(false);
-            });
-
-        });
-    };
-
-    let $posts = $(".question, .answer");
-
-    $posts.each(function() {
+WaitForMMI().then(function()
+{
+    // hide marginal mod indicators
+    $(".post-issue").hide();
+    
+    $(".question, .answer").each(function() 
+    {
         let postType = $(this).hasClass("question") ? "question" : "answer";
         let postId = $(this).data(postType + "id");
 
         let postDiv = $("div." + postType + "[data-" + postType + "id='" + postId + "']");
+        
+        let issues = $(this).find(".post-issue-display"),
+            flags = issues.find("a[href='/admin/posts/" + postId + "/show-flags']"),
+            deletedComments = issues.find("a[href='/admin/posts/" + postId + "/comments']"),
+            timeline = issues.find("a[href='/admin/posts/timeline/" + postId + "']"),
+            flagCount = (flags.text().match(/(\d+)/g)||[null])[0],
+            deletedCommentCount = (deletedComments.text().match(/(\d+)/g)||[null])[0];
+        
 
-        modinfo.getFlagCount(postId, function(flags) {
-            modinfo.getCommentCount(postId, function(comments) {
-                modinfo.getTimelineLink(postId, function(timeline) {
-                    if(flags !== null) {
-                        let $flags = modinfo.createIndicator(flags, "/admin/posts/" + postId + "/show-flags", true, "supernova");
-                        $flags.attr("title", flags + " flags have been cast on this post");
-                        $flags.appendTo(postDiv.find("div.vote"));
-                    }
-                    
-                    if(comments !== null) {
-                        let $comments = modinfo.createIndicator(comments, "#", false, "hot");
-                        $comments.attr("title", "there are " + comments + " deleted comments on this post");
-                        $comments.click(function(e) {
-                            e.preventDefault();
-                            modinfo.showDeletedComments(postDiv);
-                        });
-                        $comments.appendTo(postDiv.find("div.vote"));
-                    }
-                    
-                    if(timeline !== null) {
-                        let $timeline = modinfo.createIndicator("T", timeline.attr("href"), true, "");
-                        $timeline.children("div").css("background", "#1B7ECE").addClass('msemi-timeline-div');
-                        $timeline.attr("title", "mod timeline");
-                        $timeline.children("a").first().attr("href", "/admin/posts/timeline/" + postId);
-                        $timeline.appendTo(postDiv.find("div.vote"));
-                    }
-                });
+        if(flagCount !== null) {
+            let $flags = modinfo.createIndicator(flagCount, "/admin/posts/" + postId + "/show-flags", true, "supernova");
+            $flags.attr("title", flagCount + " flags have been cast on this post");
+            $flags.appendTo(postDiv.find("div.vote"));
+        }
+        
+        if(deletedCommentCount !== null) {
+            let $comments = modinfo.createIndicator(deletedCommentCount, "#", false, "hot");
+            $comments.attr("title", "there are " + deletedCommentCount + " deleted comments on this post");
+            $comments.click(function(e) {
+                e.preventDefault();
+                deletedComments.click();
             });
-        });
-    });
-
-    $(document).on("DOMNodeInserted", function(e) {
-        if($(e.target).hasClass("post-issue")) {
-            $(e.target).css('display', 'none');
+            $comments.appendTo(postDiv.find("div.vote"));
+        }
+        
+        // this makes no sense to me; every post has a timeline and it's always at the same URL so we don't even need to bother using the one in the marginal indicator --Shog9
+        if(timeline.length) {
+            let $timeline = modinfo.createIndicator("T", timeline.attr("href"), true, "");
+            $timeline.children("div").css("background", "#1B7ECE").addClass('msemi-timeline-div');
+            $timeline.attr("title", "mod timeline");
+            $timeline.children("a").first().attr("href", "/admin/posts/timeline/" + postId);
+            $timeline.appendTo(postDiv.find("div.vote"));
         }
     });
-    
-}
+});
