@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Chat Links
 // @namespace    https://artofcode.co.uk
-// @version      0.0.3
+// @version      0.1.1
 // @description  Links a user's chat profile from their main-site profile.
 // @author       ArtOfCode
 // @match        *://*.stackexchange.com/users/*
@@ -26,7 +26,7 @@
             let match = networkLink.attr("href").match(networkLinkRegex);
             if (match && match.length >= 2) {
                 let networkID = match[1];
-                let chatUrl = "https://chat.stackexchange.com/accounts/" + networkID;
+                let chatUrl = `https://chat.${location.hostname}/accounts/${networkID}`;
                 let chatLink = $("<a></a>").attr("href", chatUrl).text("Chat Profile");
                 networkLink.after(chatLink);
             }
