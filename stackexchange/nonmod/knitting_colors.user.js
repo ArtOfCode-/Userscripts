@@ -6,7 +6,7 @@
 // @match       https://winterbash2018.stackexchange.com/
 // @grant       none
 // @run-at      document-start
-// @version     0.1.2
+// @version     0.2.1
 // @updateURL   https://github.com/ArtOfCode-/Userscripts/raw/master/stackexchange/nonmod/knitting_colors.user.js
 // @downloadURL https://github.com/ArtOfCode-/Userscripts/raw/master/stackexchange/nonmod/knitting_colors.user.js
 // ==/UserScript==
@@ -18,6 +18,7 @@ const customJQuery = function (f) {
     let source = isFF ? f.toSource() : f.toString();
     source = source.replace('["#272727","#90d7f4","#18459e","#346db4","#5353b2","#ed1c24","#ec93e7","#e68d20","#c69c6d","#fece05","#8cc63f","#ffffff"]',
                             '["#272727","#757575","#c3c3c3","#ffffff","#90d7f4","#18459e","#346db4","#5353b2","#ec93e7","#9a0a10","#ed1c24","#ff5949","#e68d20","#c69c6d","#81501a","#fece05","#3a990f","#8cc63f","#aae09a"]');
+    source = isFF ? source : `(${source})`;
     arguments[0] = eval(source);
   }
 
