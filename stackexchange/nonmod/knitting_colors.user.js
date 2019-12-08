@@ -3,13 +3,24 @@
 // @description Add more colors to the SE Winter Bash Knitting Editor.
 // @namespace   https://charcoal-se.org/
 // @author      ArtOfCode
-// @match       https://winterbash2018.stackexchange.com/
+// @match       https://winterbash2019.stackexchange.com/
 // @grant       none
 // @run-at      document-start
-// @version     0.2.1
+// @version     0.3.1
 // @updateURL   https://github.com/ArtOfCode-/Userscripts/raw/master/stackexchange/nonmod/knitting_colors.user.js
 // @downloadURL https://github.com/ArtOfCode-/Userscripts/raw/master/stackexchange/nonmod/knitting_colors.user.js
 // ==/UserScript==
+
+/**
+ * Colors config - you can edit this bit to add any extra colors you want.
+ */
+
+const newColors = ["#272727", "#757575", "#c3c3c3", "#ffffff", "#90d7f4", "#18459e", "#346db4", "#5353b2", "#ec93e7", "#9a0a10", "#ed1c24", "#ff5949", "#e68d20", "#c69c6d", "#81501a",
+                   "#fece05","#3a990f","#8cc63f","#aae09a"];
+
+/**
+ * DO NOT EDIT THE FOLLOWING UNLESS YOU KNOW WHAT YOU'RE DOING
+ */
 
 const isFF = (function f() {return 1;}).toSource().indexOf("JSON") === -1;
 
@@ -17,7 +28,7 @@ const customJQuery = function (f) {
   if (arguments.length === 1 && typeof(f) === "function") {
     let source = isFF ? f.toSource() : f.toString();
     source = source.replace('["#272727","#90d7f4","#18459e","#346db4","#5353b2","#ed1c24","#ec93e7","#e68d20","#c69c6d","#fece05","#8cc63f","#ffffff"]',
-                            '["#272727","#757575","#c3c3c3","#ffffff","#90d7f4","#18459e","#346db4","#5353b2","#ec93e7","#9a0a10","#ed1c24","#ff5949","#e68d20","#c69c6d","#81501a","#fece05","#3a990f","#8cc63f","#aae09a"]');
+                            `[${newColors.join(',')}]`);
     source = isFF ? source : `(${source})`;
     arguments[0] = eval(source);
   }
