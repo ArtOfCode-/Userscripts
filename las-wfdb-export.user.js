@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         WFDB: Export
 // @namespace    http://data/*
-// @version      2024-08-22
+// @version      2024-08-22.01
 // @description  Make WFDB reports exportable - press Ctrl-Alt-C.
 // @author       You
 // @match        http://data/*
