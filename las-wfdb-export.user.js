@@ -6,6 +6,8 @@
 // @author       You
 // @match        http://data/*
 // @match        https://portal.londonambulance.nhs.uk/Data/*
+// @updateURL    https://github.com/ArtOfCode-/Userscripts/raw/master/las-wfdb-export.user.js
+// @downloadURL  https://github.com/ArtOfCode-/Userscripts/raw/master/las-wfdb-export.user.js
 // @grant        none
 // ==/UserScript==
 
