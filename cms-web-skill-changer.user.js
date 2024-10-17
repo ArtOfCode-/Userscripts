@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         CMS Web Skill Changer
 // @namespace    https://172.31.39.50:8443/
-// @version      2024-10-16.01
+// @version      2024-10-16.02
 // @author       You
 // @description  Make skill changes easier
 // @match        https://172.31.39.50:8443/CMSWeb/
@@ -61,7 +61,7 @@ const skillProfiles = {
 
 const createButton = (text, skillProfile) => {
     const btn = document.createElement('button');
-    btn.classList.add('btn-default', 'mdc-button', 'mdc-button--outlined', 'mat-mdc-outlined-button', 'mat-unthemed', 'mat-mdc-button-base', 'js__userscript-button');
+    btn.classList.add('btn-default', 'mdc-button', 'mdc-button--outlined', 'mat-mdc-outlined-button', 'mat-unthemed', 'mat-mdc-button-base', 'mat-warn', 'js__userscript-button');
     btn.innerText = text;
     btn.dataset.skillProfile = skillProfile;
     return btn;
