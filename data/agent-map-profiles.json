@@ -1,0 +1,34 @@
+{
+    "999": [
+        { level: 3, percent: 0, skill: 2995, interruptibleAux: 0 },
+        { level: 3, percent: 0, skill: 5000, interruptibleAux: 0 },
+        { level: 3, percent: 0, skill: 8000, interruptibleAux: 0 }
+    ],
+    "DDS": [
+        { level: 1, percent: 0, skill: 5028, interruptibleAux: 0 },
+        { level: 1, percent: 0, skill: 5004, interruptibleAux: 0 },
+        { level: 1, percent: 0, skill: 5019, interruptibleAux: 0 },
+        { level: 1, percent: 0, skill: 5021, interruptibleAux: 0 },
+        { level: 1, percent: 0, skill: 5029, interruptibleAux: 0 },
+        { level: 3, percent: 0, skill: 8000, interruptibleAux: 0 }
+    ],
+    "METDG/PD09": [
+        { level: 1, percent: 0, skill: 5028, interruptibleAux: 0 },
+        { level: 3, percent: 0, skill: 8000, interruptibleAux: 0 }
+    ],
+    "ERD NE": [
+        { level: 2, percent: 0, skill: 5028, interruptibleAux: 0 },
+        { level: 2, percent: 0, skill: 5029, interruptibleAux: 0 },
+        { level: 3, percent: 0, skill: 8000, interruptibleAux: 0 }
+    ],
+    "ERD NC": [
+        { level: 2, percent: 0, skill: 5028, interruptibleAux: 0 },
+        { level: 2, percent: 0, skill: 5019, interruptibleAux: 0 },
+        { level: 3, percent: 0, skill: 8000, interruptibleAux: 0 }
+    ],
+    "ERD NW": [
+        { level: 2, percent: 0, skill: 5028, interruptibleAux: 0 },
+        { level: 2, percent: 0, skill: 5021, interruptibleAux: 0 },
+        { level: 3, percent: 0, skill: 8000, interruptibleAux: 0 }
+    ]
+}
