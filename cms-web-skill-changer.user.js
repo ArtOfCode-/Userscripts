@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         CMS Web Skill Changer
 // @namespace    https://172.31.39.50:8443/
-// @version      2024-10-26.01
+// @version      2025-08-27.12
 // @author       You
 // @description  Make skill changes easier
 // @match        https://172.31.39.50:8443/CMSWeb/
@@ -23,41 +23,62 @@ const payload = {
     "callHandlingPreference": 1,
     "useServiceObjective": false,
     "directAgentCallFirst": true
-    //"agentList": ["310192"]
 };
 
-const skillProfiles = {
-    '999': [
-        { level: 3, percent: 0, skill: 2995, interruptibleAux: 0 }, // 999 call handling
-        { level: 3, percent: 0, skill: 5000, interruptibleAux: 0 }, // Newham call handling
-        { level: 3, percent: 0, skill: 8000, interruptibleAux: 0 }  // RedBox
+let skillProfiles = {
+    "999 North": [
+        { level: 3, percent: 0, skill: 2995, interruptibleAux: 0 },
+        { level: 3, percent: 0, skill: 5000, interruptibleAux: 0 },
+        { level: 3, percent: 0, skill: 8000, interruptibleAux: 0 }
     ],
-    'dds': [
-        { level: 1, percent: 0, skill: 5028, interruptibleAux: 0 }, // Newham dispatch
-        { level: 1, percent: 0, skill: 5004, interruptibleAux: 0 }, // Newham DDS
-        { level: 1, percent: 0, skill: 5019, interruptibleAux: 0 }, // NC dispatch
-        { level: 1, percent: 0, skill: 5021, interruptibleAux: 0 }, // NW dispatch
-        { level: 1, percent: 0, skill: 5029, interruptibleAux: 0 }, // NE dispatch
-        { level: 3, percent: 0, skill: 8000, interruptibleAux: 0 }  // RedBox
+    "999 South": [
+        { level: 3, percent: 0, skill: 2995, interruptibleAux: 0 },
+        { level: 3, percent: 0, skill: 2000, interruptibleAux: 0 },
+        { level: 3, percent: 0, skill: 8000, interruptibleAux: 0 }
     ],
-    'metdg': [
-        { level: 1, percent: 0, skill: 5028, interruptibleAux: 0 }, // Newham dispatch
-        { level: 3, percent: 0, skill: 8000, interruptibleAux: 0 }  // RedBox
+    "DDS North": [
+        { level: 1, percent: 0, skill: 5028, interruptibleAux: 0 },
+        { level: 1, percent: 0, skill: 5004, interruptibleAux: 0 },
+        { level: 1, percent: 0, skill: 5019, interruptibleAux: 0 },
+        { level: 1, percent: 0, skill: 5021, interruptibleAux: 0 },
+        { level: 1, percent: 0, skill: 5029, interruptibleAux: 0 },
+        { level: 3, percent: 0, skill: 8000, interruptibleAux: 0 }
     ],
-    'erdne': [
-        { level: 2, percent: 0, skill: 5028, interruptibleAux: 0 }, // Newham dispatch
-        { level: 2, percent: 0, skill: 5029, interruptibleAux: 0 }, // NE dispatch
-        { level: 3, percent: 0, skill: 8000, interruptibleAux: 0 }  // RedBox
+    "DDS South": [
+        { level: 1, percent: 0, skill: 2028, interruptibleAux: 0 },
+        { level: 1, percent: 0, skill: 5004, interruptibleAux: 0 },
+        { level: 1, percent: 0, skill: 2020, interruptibleAux: 0 },
+        { level: 1, percent: 0, skill: 2068, interruptibleAux: 0 },
+        { level: 3, percent: 0, skill: 8000, interruptibleAux: 0 }
     ],
-    'erdnc': [
-        { level: 2, percent: 0, skill: 5028, interruptibleAux: 0 }, // Newham dispatch
-        { level: 2, percent: 0, skill: 5019, interruptibleAux: 0 }, // NC dispatch
-        { level: 3, percent: 0, skill: 8000, interruptibleAux: 0 }  // RedBox
+    "METDG": [
+        { level: 1, percent: 0, skill: 5028, interruptibleAux: 0 },
+        { level: 3, percent: 0, skill: 8000, interruptibleAux: 0 }
     ],
-    'erdnw': [
-        { level: 2, percent: 0, skill: 5028, interruptibleAux: 0 }, // Newham dispatch
-        { level: 2, percent: 0, skill: 5021, interruptibleAux: 0 }, // NW dispatch
-        { level: 3, percent: 0, skill: 8000, interruptibleAux: 0 }  // RedBox
+    "ERD NE": [
+        { level: 2, percent: 0, skill: 5028, interruptibleAux: 0 },
+        { level: 2, percent: 0, skill: 5029, interruptibleAux: 0 },
+        { level: 3, percent: 0, skill: 8000, interruptibleAux: 0 }
+    ],
+    "ERD NC": [
+        { level: 2, percent: 0, skill: 5028, interruptibleAux: 0 },
+        { level: 2, percent: 0, skill: 5019, interruptibleAux: 0 },
+        { level: 3, percent: 0, skill: 8000, interruptibleAux: 0 }
+    ],
+    "ERD NW": [
+        { level: 2, percent: 0, skill: 5028, interruptibleAux: 0 },
+        { level: 2, percent: 0, skill: 5021, interruptibleAux: 0 },
+        { level: 3, percent: 0, skill: 8000, interruptibleAux: 0 }
+    ],
+    "ERD SE": [
+        { level: 2, percent: 0, skill: 2028, interruptibleAux: 0 },
+        { level: 2, percent: 0, skill: 2020, interruptibleAux: 0 },
+        { level: 3, percent: 0, skill: 8000, interruptibleAux: 0 }
+    ],
+    "ERD SW": [
+        { level: 2, percent: 0, skill: 2028, interruptibleAux: 0 },
+        { level: 2, percent: 0, skill: 2068, interruptibleAux: 0 },
+        { level: 3, percent: 0, skill: 8000, interruptibleAux: 0 }
     ]
 };
 
@@ -78,12 +99,9 @@ const observer = new MutationObserver((mutationList, observer) => {
     if (location.hash === '#/admin/agent/multiAgentSkillChange' && !buttonsAdded) {
         const buttonList = document.querySelectorAll('.form-group.col-11.button-group');
         if (buttonList.length > 0) {
-            buttonList[0].append(createButton('999', '999'));
-            buttonList[0].append(createButton('DDS', 'dds'));
-            buttonList[0].append(createButton('METDG/PD09', 'metdg'));
-            buttonList[0].append(createButton('ERD NE', 'erdne'));
-            buttonList[0].append(createButton('ERD NC', 'erdnc'));
-            buttonList[0].append(createButton('ERD NW', 'erdnw'));
+            Object.keys(skillProfiles).forEach(key => {
+                buttonList[0].append(createButton(key, key));
+            });
             buttonsAdded = true;
         }
     }
