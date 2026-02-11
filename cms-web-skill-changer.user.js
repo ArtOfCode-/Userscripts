@@ -1,10 +1,11 @@
 // ==UserScript==
 // @name         CMS Web Skill Changer
 // @namespace    https://172.31.39.50:8443/
-// @version      2025-08-27.12
+// @version      2026-02-11.02
 // @author       You
 // @description  Make skill changes easier
 // @match        https://172.31.39.50:8443/CMSWeb/
+// @match        https://172.31.39.60:8443/CMSWeb/
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=39.50
 // @grant        none
 // @updateURL    https://github.com/ArtOfCode-/Userscripts/raw/master/cms-web-skill-changer.user.js
@@ -126,7 +127,7 @@ const addPreButton = content => {
     const form = buttonGroup.closest('form');
     const buttonRow = buttonGroup.closest('.row');
 
-    form.insertBefore(row, buttonRow);
+    buttonRow.parentElement.insertBefore(row, buttonRow);
     return row;
 };
 
