@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         CADO Improvements
 // @namespace    https://cadonline.londonambulance.nhs.uk/
-// @version      2026-09-06.01
+// @version      2026-09-06.02
 // @author       You
 // @description  Make skill changes easier
 // @match        https://cadonline.londonambulance.nhs.uk/*
