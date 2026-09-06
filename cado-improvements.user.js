@@ -52,7 +52,7 @@ const cadClickHandler = async (ev) => {
     const data = await resp.json();
     const callID = data[0]?.CallID;
     if (!!callID) {
-        location.href = `/cadonline/frmCall.aspx?id=${callID}`;
+        window.open(`/cadonline/frmCall.aspx?id=${callID}`, '_blank').focus();
     }
 };
 
