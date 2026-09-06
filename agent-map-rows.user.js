@@ -3,7 +3,7 @@
 // @namespace    http://192.168.222.165/
 // @version      2025-01-19.01
 // @author       You
-// @description  Make skill changes easier
+// @description  Add row letters to the agent map.
 // @match        http://192.168.222.165/wallboardcm10/frmAgentMap.aspx*
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=222.165
 // @grant        none
@@ -11,50 +11,148 @@
 // @downloadURL  https://github.com/ArtOfCode-/Userscripts/raw/master/agent-map-rows.user.js
 // ==/UserScript==
 
-/* eslint-disable no-multi-spaces */
+(function () {
+    'use strict';
 
-const createContainer = (letter, left, width) => {
-    const div = document.createElement('div');
-    div.style.position = 'absolute';
-    div.style.top = '10px';
-    div.style.left = left;
-    div.style.width = `${width}px`;
-    div.style.textAlign = 'center';
-    div.style.color = 'red';
-    div.style.fontWeight = 'bold';
-    div.style.fontSize = '16px';
-    div.style.background = 'white';
-    div.classList.add('js__letter-marker');
-    div.innerText = letter;
-    return div;
-};
+    let redrawPending = false;
+    let lastColumnSignature = '';
 
-const runDetector = () => {
-    const desks = Array.from(document.querySelectorAll('.extension_container'));
-    if (desks.length === 46) {
-        const container = document.querySelector('#divContainer');
-        const containerLeft = container.getBoundingClientRect().left;
-        const offsets = desks.map(d => d.style.left).filter((v, i, a) => a.indexOf(v) === i);
-        const width = desks[0].getBoundingClientRect().width;
-        const alpha = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M'];
-        const letters = offsets.map((l, i) => {
-            l = `calc(${l} + ${containerLeft}px)`;
-            return createContainer(alpha[i], l, width);
+    function getColumnPositions(desks) {
+        return [...new Set(
+            desks
+                .map(d => parseInt(getComputedStyle(d).left, 10))
+                .filter(v => !isNaN(v))
+        )].sort((a, b) => a - b);
+    }
+
+    function drawLetters() {
+
+        const desks = Array.from(
+            document.querySelectorAll('.extension_container')
+        );
+
+        if (!desks.length) {
+            return;
+        }
+
+        const columns = getColumnPositions(desks);
+        const signature = columns.join('|');
+
+        // Skip redraw if nothing changed
+        if (signature === lastColumnSignature) {
+            return;
+        }
+
+        lastColumnSignature = signature;
+
+        document
+            .querySelectorAll('.tm-column-letter')
+            .forEach(el => el.remove());
+
+        const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+
+        columns.forEach((left, index) => {
+
+            const desksInColumn = desks.filter(
+                d => parseInt(getComputedStyle(d).left, 10) === left
+            );
+
+            if (!desksInColumn.length) {
+                return;
+            }
+
+            const lowestDesk = desksInColumn.reduce((lowest, current) => {
+
+                const currentTop =
+                    parseInt(getComputedStyle(current).top, 10);
+
+                const lowestTop =
+                    parseInt(getComputedStyle(lowest).top, 10);
+
+                return currentTop > lowestTop
+                    ? current
+                    : lowest;
+
+            });
+
+            const rect = lowestDesk.getBoundingClientRect();
+
+            const marker = document.createElement('div');
+
+            marker.className = 'tm-column-letter';
+            marker.textContent =
+                letters[index] || `C${index + 1}`;
+
+            marker.style.position = 'fixed';
+            marker.style.left = `${rect.left}px`;
+            marker.style.top = `${rect.bottom + 5}px`;
+            marker.style.width = `${rect.width}px`;
+
+            marker.style.textAlign = 'center';
+            marker.style.fontWeight = 'bold';
+            marker.style.fontSize = '18px';
+
+            marker.style.color = '#d00000';
+            marker.style.background = '#ffffff';
+
+            marker.style.zIndex = '99999';
+            marker.style.pointerEvents = 'none';
+
+            document.body.appendChild(marker);
         });
 
-        Array.from(document.querySelectorAll('.js__letter-marker')).forEach(el => el.remove());
-        letters.forEach(el => document.body.appendChild(el));
+        console.log(
+            `Agent Map Letters: ${columns.length} columns rendered`
+        );
     }
-};
 
-const config = { attributes: true, childList: true, subtree: true };
-const observer = new MutationObserver((mutationList, observer) => {
-    runDetector();
-});
+    function scheduleDraw() {
 
-document.addEventListener('DOMContentLoaded', ev => {
-    const container = document.querySelector('#divExtensions');
-    observer.observe(container, config);
+        if (redrawPending) {
+            return;
+        }
 
-    runDetector();
-});
+        redrawPending = true;
+
+        setTimeout(() => {
+
+            redrawPending = false;
+
+            requestAnimationFrame(() => {
+                drawLetters();
+            });
+
+        }, 500);
+    }
+
+    function initialise() {
+
+        drawLetters();
+
+        const target =
+            document.querySelector('#divExtensions');
+
+        if (!target) {
+            console.warn(
+                'Agent Map Letters: #divExtensions not found'
+            );
+            return;
+        }
+
+        const observer = new MutationObserver(() => {
+            scheduleDraw();
+        });
+
+        observer.observe(target, {
+            childList: true,
+            subtree: true
+        });
+
+        console.log(
+            'Agent Map Letters: observer attached'
+        );
+    }
+
+    setTimeout(initialise, 1500);
+
+})();
