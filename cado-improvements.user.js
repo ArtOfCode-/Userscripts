@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         CADO Improvements
 // @namespace    https://cadonline.londonambulance.nhs.uk/
-// @version      2026-09-06.02
+// @version      2026-09-08.01
 // @author       You
 // @description  Make skill changes easier
 // @match        https://cadonline.londonambulance.nhs.uk/*
@@ -12,6 +12,10 @@
 // ==/UserScript==
 
 /* eslint-disable no-multi-spaces */
+
+/* ==================== PHONE QUEUE BUTTONS ==================== */
+// Adds a Copy button to the telephone number column, and a View button to
+// the CAD number column which takes you to the full CAD view (frmCall).
 
 const copyClickHandler = (ev) => {
     navigator.clipboard.writeText(ev.target.dataset.telNumber);
@@ -84,4 +88,19 @@ const phoneObserver = new MutationObserver((mutationList, observer) => {
 
 if (location.pathname === '/cadonline/frmPhoneQ.aspx') {
     phoneObserver.observe(document.querySelector('#tblMain'), config);
+}
+
+
+/* ==================== CALL PAGE ==================== */
+// Silences the error on the frmCall page (which exists because we're probably
+// not meant to have access to it) that complains about gWinMan being undefined.
+
+if (location.pathname === '/cadonline/frmCall.aspx') {
+    const baseObject = {};
+    const handler = {
+        get (target, prop, receiver) {
+            return () => undefined;
+        }
+    };
+    window.gWinMan = new Proxy(baseObject, handler);
 }
